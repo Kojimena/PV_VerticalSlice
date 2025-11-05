@@ -5,18 +5,18 @@ using UnityEngine.AI;
 
 public class EnemyAI1 : MonoBehaviour
 {
-    private enum State { Patrol, Chase, Attack }
+    private enum State { Patrol, Chase, Talk }  
     [SerializeField] private Transform[] waypoints;
 
     [Header("OffMeshLink / Jump")]
-    [SerializeField] private string jumpTriggerName = "Jump"; // trigger de la animación
+    [SerializeField] private string jumpTriggerName = "Jump";
     [SerializeField] private string landTriggerName = "";      
-    [SerializeField] private float jumpDuration = 0.6f;        // segundos
-    [SerializeField] private float jumpHeight   = 1.2f;        // altura de la parábola
+    [SerializeField] private float jumpDuration = 0.6f;
+    [SerializeField] private float jumpHeight   = 1.2f;
     [SerializeField] private bool useParabolaMovement = true;  
     
     [SerializeField] private AudioSource sfxSource;
-    [SerializeField] private AudioClip hitSfx;
+    [SerializeField] private AudioClip talkSfx; 
 
 
     private int wpIndex = 0;
@@ -32,10 +32,10 @@ public class EnemyAI1 : MonoBehaviour
     private float loseSightTimer = 0.0f;
     [SerializeField] private float loseSightTime = 3.0f;
 
-    // Attack 
-    [SerializeField] private float attackRange = 2.0f;
-    [SerializeField] private float attackCooldown = 1.0f;
-    private float lastAttackTime = 0.0f;
+    // Talk 
+    [SerializeField] private float talkRange = 2.0f;  
+    [SerializeField] private float talkCooldown = 3.0f;  
+    private float lastTalkTime = 0.0f;
 
     // Animator hashes
     private int HashSpeed;
@@ -60,7 +60,6 @@ public class EnemyAI1 : MonoBehaviour
     {
         if (anim) anim.SetFloat(HashSpeed, agent.velocity.magnitude);
 
-        // link para salto
         if (!isJumping && agent.isOnOffMeshLink)
             StartCoroutine(TraverseOffMeshLinkWithJump());
 
@@ -68,25 +67,41 @@ public class EnemyAI1 : MonoBehaviour
         {
             case State.Patrol: Patrol(); break;
             case State.Chase:  Chase();  break;
-            case State.Attack: Attack(); break;
+            case State.Talk:   Talk();   break; 
         }
     }
 
-    private void Attack()
+    private void Talk()  
     {
         if (!objective) return;
+        
         transform.LookAt(objective);
+        
+        agent.SetDestination(transform.position);
 
-        if (Time.time > lastAttackTime + attackCooldown)
+        if (Time.time > lastTalkTime + talkCooldown)
         {
-            agent.SetDestination(objective.position);
-            anim.SetBool("isAttacking", true);
-            lastAttackTime = Time.time;
+            anim.SetBool("isTalking", true);  
+            
+            if (sfxSource != null && talkSfx != null) 
+                sfxSource.PlayOneShot(talkSfx);
+            
+            lastTalkTime = Time.time;
         }
 
         float d = Vector3.Distance(transform.position, objective.position);
-        if (d > attackRange) { currentState = State.Chase; anim.SetBool("isAttacking", false); }
-        else if (!LookForObjective()) { currentState = State.Patrol; anim.SetBool("isAttacking", false); }
+        
+        if (d > talkRange) 
+        { 
+            currentState = State.Chase; 
+            anim.SetBool("isTalking", false); 
+        }
+        // Si pierde de vista al jugador, volver a patrullar
+        else if (!LookForObjective()) 
+        { 
+            currentState = State.Patrol; 
+            anim.SetBool("isTalking", false); 
+        }
     }
 
     private void Chase()
@@ -97,15 +112,20 @@ public class EnemyAI1 : MonoBehaviour
         agent.SetDestination(objective.position);
 
         float d = Vector3.Distance(transform.position, objective.position);
-        if (d <= attackRange)
+        
+        if (d <= talkRange)
         {
-            currentState = State.Attack;
-            anim.SetTrigger("isAttacking");
+            currentState = State.Talk;
+            anim.SetTrigger("isTalking");
         }
         else if (d > viewRadius)
         {
             loseSightTimer += Time.deltaTime;
-            if (loseSightTimer >= loseSightTime) { currentState = State.Patrol; loseSightTimer = 0.0f; }
+            if (loseSightTimer >= loseSightTime) 
+            { 
+                currentState = State.Patrol; 
+                loseSightTimer = 0.0f; 
+            }
         }
         else loseSightTimer = 0.0f;
     }
@@ -144,7 +164,6 @@ public class EnemyAI1 : MonoBehaviour
         Gizmos.DrawRay(transform.position + Vector3.up, rightBoundary * viewRadius);
     }
     
-
     private IEnumerator TraverseOffMeshLinkWithJump()
     {
         isJumping = true;
@@ -201,7 +220,7 @@ public class EnemyAI1 : MonoBehaviour
     private Vector3 Parabola(Vector3 start, Vector3 end, float height, float t)
     {
         Vector3 m = Vector3.Lerp(start, end, t);
-        float y = -4f * height * (t - 0.5f) * (t - 0.5f) + height; // pico en t=0.5
+        float y = -4f * height * (t - 0.5f) * (t - 0.5f) + height;
         m.y += y;
         return m;
     }
@@ -214,16 +233,4 @@ public class EnemyAI1 : MonoBehaviour
         transform.rotation = Quaternion.Slerp(transform.rotation, look, Time.deltaTime * turnSpeed);
     }
     
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            PlayerHealth ph = other.GetComponent<PlayerHealth>();
-            if (ph != null)
-            {
-                ph.TakeDamage(1); // resta 1 vida por golpe
-                if (sfxSource != null && hitSfx != null) sfxSource.PlayOneShot(hitSfx);
-            }
-        }
-    }
 }

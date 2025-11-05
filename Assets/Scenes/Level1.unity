@@ -970,13 +970,13 @@ MonoBehaviour:
   jumpHeight: 1.2
   useParabolaMovement: 1
   sfxSource: {fileID: 270319296}
-  hitSfx: {fileID: 8300000, guid: a34ea4aa31aac49d3bb8a45d714560cd, type: 3}
-  viewRadius: 10
+  talkSfx: {fileID: 0}
+  viewRadius: 2
   viewAngle: 90
   objective: {fileID: 1420535853}
   loseSightTime: 3
-  attackRange: 2
-  attackCooldown: 1
+  talkRange: 2
+  talkCooldown: 3
 --- !u!195 &270319293
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -4332,15 +4332,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 150b771c021f45d48873c0d8caddd485, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.6
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 150b771c021f45d48873c0d8caddd485, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.6
+      value: 0.55
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 150b771c021f45d48873c0d8caddd485, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.6
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 150b771c021f45d48873c0d8caddd485, type: 3}
       propertyPath: m_LocalPosition.x

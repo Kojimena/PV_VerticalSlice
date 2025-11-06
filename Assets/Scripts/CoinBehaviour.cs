@@ -26,10 +26,10 @@ public class CoinBehaviour : MonoBehaviour
             persistentItem.MarkAsCollected();
         }
 
-        if (GameEventsBehaviour.Instance != null)
-        {
-            GameEventsBehaviour.Instance.RaiseCoinCollected();
-        }
+        // if (GameEventsBehaviour.Instance != null)
+        // {
+        //     GameEventsBehaviour.Instance.RaiseCoinCollected();
+        // }
 
         if (coinData != null && coinData.pickUpSound != null)
         {

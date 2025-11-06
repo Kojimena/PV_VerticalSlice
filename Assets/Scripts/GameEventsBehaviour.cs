@@ -8,7 +8,7 @@ public class GameEventsBehaviour : MonoBehaviour
 {
     
     public static GameEventsBehaviour Instance;
-    public event Action OnCoinCollected; // Evento para cuando se recoge una moneda
+    // public event Action OnCoinCollected; // Evento para cuando se recoge una moneda
     public event Action OnLifeCollected; // Evento para cuando se recoge una vida
     public event Action<int,int> OnLivesChanged; // Evento para cuando cambian las vidas
     
@@ -30,10 +30,10 @@ public class GameEventsBehaviour : MonoBehaviour
         }
     }
     
-    public void RaiseCoinCollected()
-    {
-        OnCoinCollected?.Invoke();
-    }
+    // public void RaiseCoinCollected()
+    // {
+    //     OnCoinCollected?.Invoke();
+    // }
     
     public void RaiseLifeCollected()
     {

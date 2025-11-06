@@ -96,8 +96,6 @@ public class GameManager : MonoBehaviour
 
         PersistenceManager.Instance.data.collectedItemIds.Clear();
         
-        PersistenceManager.Instance.data.isDoorOpen = false;
-        
         PersistenceManager.Instance.data.hasCheckpoint = false;
         PersistenceManager.Instance.data.playerPosition = Vector3.zero;
 

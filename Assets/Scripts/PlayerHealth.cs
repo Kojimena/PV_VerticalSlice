@@ -13,7 +13,7 @@ public class PlayerHealth : MonoBehaviour
         if (GameEventsBehaviour.Instance != null)
             GameEventsBehaviour.Instance.OnLifeCollected += OnLifePickup;
     }
-
+    
     private void OnDisable()
     {
         if (GameEventsBehaviour.Instance != null)

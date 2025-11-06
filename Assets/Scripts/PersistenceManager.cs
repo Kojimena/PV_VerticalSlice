@@ -34,13 +34,12 @@ public class PersistenceManager : MonoBehaviour
         {
             currentLives = session.currentLives,
             maxLives = session.maxLives,
-            coinCount = session.coinCount,
+            // coinCount = session.coinCount,
             inventoryItems = session.inventoryItems,
             playerPosition = session.playerPosition,
             currentSceneName = SceneManager.GetActiveScene().name,
             collectedItemIds = session.collectedItemIds ,
             hasCheckpoint = session.hasCheckpoint,
-            isDoorOpen = session.isDoorOpen
         };
         
         try
@@ -74,13 +73,12 @@ public class PersistenceManager : MonoBehaviour
             GameData loadedData = JsonUtility.FromJson<GameData>(json);
             session.currentLives = loadedData.currentLives;
             session.maxLives = loadedData.maxLives;
-            session.coinCount = loadedData.coinCount;
+            // session.coinCount = loadedData.coinCount;
             session.inventoryItems = loadedData.inventoryItems ?? new System.Collections.Generic.List<InventoryItemData>();
             session.playerPosition = loadedData.playerPosition;
             session.currentSceneName = loadedData.currentSceneName;
             session.collectedItemIds = loadedData.collectedItemIds ?? new System.Collections.Generic.List<string>();
             session.hasCheckpoint = loadedData.hasCheckpoint;
-            session.isDoorOpen = loadedData.isDoorOpen;
 
 
         }

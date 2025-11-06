@@ -15,7 +15,6 @@ public class EnemyAI1 : MonoBehaviour
     [SerializeField] private float jumpHeight   = 1.2f;
     [SerializeField] private bool useParabolaMovement = true;  
     
-    [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioClip talkSfx; 
 
 
@@ -83,8 +82,8 @@ public class EnemyAI1 : MonoBehaviour
         {
             anim.SetBool("isTalking", true);  
             
-            if (sfxSource != null && talkSfx != null) 
-                sfxSource.PlayOneShot(talkSfx);
+            if (talkSfx != null) 
+                AudioManager.instance.PlaySFX(talkSfx);
             
             lastTalkTime = Time.time;
         }

@@ -4,44 +4,110 @@ public class AudioManager : MonoBehaviour
 {
     // SINGLETON
     public static AudioManager instance;
-    private AudioSource audioSource;
-    [SerializeField] private AudioClip backgroundMusic; // Clip de música de fondo
+    
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource musicSource;    // Para música de fondo
+    [SerializeField] private AudioSource sfxSource;      // Para efectos de sonido
+    
+    [Header("Music")]
+    [SerializeField] private AudioClip backgroundMusic;
+    
+    [Header("Volume Controls")]
+    [SerializeField] [Range(0f, 1f)] private float musicVolume = 0.5f;
+    [SerializeField] [Range(0f, 1f)] private float sfxVolume = 1f;
     
     private void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
+        // Singleton 
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // Mantiene el AudioManager entre escenas
+            DontDestroyOnLoad(gameObject);
+            SetupAudioSources();
         }
         else
         {
-            Destroy(gameObject); // Destruye el AudioManager si ya existe uno
+            Destroy(gameObject);
         }
     }
     
-    // Método para reproducir un clip de audio
-    public void PlayAudioClip(AudioClip clip)
+    private void SetupAudioSources()
     {
-        // correr el clip de audio aunque no este en el audioSource
-        audioSource.PlayOneShot(clip);
+        if (musicSource == null)
+        {
+            musicSource = gameObject.AddComponent<AudioSource>();
+            musicSource.loop = true;
+            musicSource.playOnAwake = false;
+        }
+        
+        if (sfxSource == null)
+        {
+            sfxSource = gameObject.AddComponent<AudioSource>();
+            sfxSource.loop = false;
+            sfxSource.playOnAwake = false;
+        }
+        
+        musicSource.volume = musicVolume;
+        sfxSource.volume = sfxVolume;
     }
     
-    // Método para detener la reproducción de audio
-    public void PlaySoundFromLocation(AudioClip clip, Vector3 position)
-    {
-        AudioSource.PlayClipAtPoint(clip, position);
-    }
-    
-    // Método para reproducir música de fondo
     private void Start()
     {
         if (backgroundMusic != null)
         {
-            audioSource.clip = backgroundMusic;
-            audioSource.loop = true; // Reproduce en bucle
-            audioSource.Play(); // Inicia la reproducción de música de fondo
+            PlayMusic(backgroundMusic);
+        }
+    }
+    
+    public void PlaySFX(AudioClip clip)
+    {
+        if (clip != null && sfxSource != null)
+        {
+            sfxSource.PlayOneShot(clip);
+        }
+    }
+    
+    public void PlaySoundFromLocation(AudioClip clip, Vector3 position)
+    {
+        if (clip != null)
+        {
+            AudioSource.PlayClipAtPoint(clip, position, sfxVolume);
+        }
+    }
+    
+    public void PlayMusic(AudioClip musicClip)
+    {
+        if (musicClip != null && musicSource != null)
+        {
+            musicSource.Stop();
+            musicSource.clip = musicClip;
+            musicSource.Play();
+        }
+    }
+    
+    public void StopMusic()
+    {
+        if (musicSource != null)
+        {
+            musicSource.Stop();
+        }
+    }
+    
+    public void SetMusicVolume(float volume)
+    {
+        musicVolume = Mathf.Clamp01(volume);
+        if (musicSource != null)
+        {
+            musicSource.volume = musicVolume;
+        }
+    }
+    
+    public void SetSFXVolume(float volume)
+    {
+        sfxVolume = Mathf.Clamp01(volume);
+        if (sfxSource != null)
+        {
+            sfxSource.volume = sfxVolume;
         }
     }
 }

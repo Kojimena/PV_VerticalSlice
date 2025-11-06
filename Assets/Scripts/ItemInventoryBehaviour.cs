@@ -29,7 +29,7 @@ public class ItemInventoryBehaviour : MonoBehaviour
         // Reproducir sonido
         if (pickUpData.pickUpSound != null)
         {
-            AudioManager.instance.PlayAudioClip(pickUpData.pickUpSound);
+            AudioManager.instance.PlaySFX(pickUpData.pickUpSound);
         }
 
         // Destruir

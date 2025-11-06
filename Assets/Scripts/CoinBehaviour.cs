@@ -33,7 +33,7 @@ public class CoinBehaviour : MonoBehaviour
 
         if (coinData != null && coinData.pickUpSound != null)
         {
-            AudioManager.instance.PlayAudioClip(coinData.pickUpSound);
+            AudioManager.instance.PlaySFX(coinData.pickUpSound);
         }
 
         Destroy(gameObject);

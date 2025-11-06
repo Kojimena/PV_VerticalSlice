@@ -33,7 +33,7 @@ public class HeartBehaviour : MonoBehaviour
 
         if (healthData != null && healthData.pickUpSound != null)
         {
-            AudioManager.instance.PlayAudioClip(healthData.pickUpSound);
+            AudioManager.instance.PlaySFX(healthData.pickUpSound);
         }
 
         Destroy(gameObject);

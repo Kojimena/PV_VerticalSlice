@@ -8,12 +8,12 @@ namespace AstronautPlayer
         private Animator anim;
         private CharacterController controller;
 
-        public float speed = 4.0f;        // 600 era enorme para CharacterController
+        public float speed = 4.0f;        
         public float turnSpeed = 400.0f;
         public float jumpForce = 5.0f;
         public float gravity = -9.81f;
 
-        private Vector3 velocity; // solo para Y y fallbacks
+        private Vector3 velocity; 
 
         void Start()
         {
@@ -42,18 +42,13 @@ namespace AstronautPlayer
             bool grounded = controller.isGrounded;
             anim.SetBool("IsGrounded", grounded);
 
-            if (grounded)
+            if (Input.GetButtonDown("Jump"))      
             {
-                if (velocity.y < 0) velocity.y = -2f; // pegado al suelo
-                if (Input.GetButtonDown("Jump"))      // “Jump” = espacio por defecto
-                {
-                    velocity.y = jumpForce;
-                    anim.ResetTrigger("Jump");
-                    anim.SetTrigger("Jump");
-                }
+                velocity.y = jumpForce;
+                anim.ResetTrigger("Jump");
+                anim.SetTrigger("Jump");
             }
 
-            // Gravedad + mover vertical
             velocity.y += gravity * Time.deltaTime;
             controller.Move(velocity * Time.deltaTime);
         }

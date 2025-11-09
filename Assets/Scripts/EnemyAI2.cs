@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,16 +7,8 @@ public class EnemyAI2 : MonoBehaviour
     private enum State { Patrol, Chase, Attack }
     [SerializeField] private Transform[] waypoints;
 
-    [Header("OffMeshLink / Jump")]
-    [SerializeField] private string jumpTriggerName = "Jump"; // trigger de la animación
-    [SerializeField] private string landTriggerName = "";      
-    [SerializeField] private float jumpDuration = 0.6f;        // segundos
-    [SerializeField] private float jumpHeight   = 1.2f;        // altura de la parábola
-    [SerializeField] private bool useParabolaMovement = true;  
-    
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioClip hitSfx;
-
 
     private int wpIndex = 0;
     private State currentState = State.Patrol;
@@ -39,18 +30,10 @@ public class EnemyAI2 : MonoBehaviour
 
     // Animator hashes
     private int HashSpeed;
-    private int HashJump;
-    private int HashLand;
-
-    private bool isJumping;
 
     void Start()
     {
         HashSpeed = Animator.StringToHash("Speed");
-        HashJump  = Animator.StringToHash(jumpTriggerName);
-        HashLand  = string.IsNullOrEmpty(landTriggerName) ? 0 : Animator.StringToHash(landTriggerName);
-
-        agent.autoTraverseOffMeshLink = false;
 
         if (waypoints != null && waypoints.Length > 0)
             agent.SetDestination(waypoints[wpIndex].position);
@@ -59,10 +42,6 @@ public class EnemyAI2 : MonoBehaviour
     void Update()
     {
         if (anim) anim.SetFloat(HashSpeed, agent.velocity.magnitude);
-
-        // link para salto
-        if (!isJumping && agent.isOnOffMeshLink)
-            StartCoroutine(TraverseOffMeshLinkWithJump());
 
         switch (currentState)
         {
@@ -113,8 +92,9 @@ public class EnemyAI2 : MonoBehaviour
     private void Patrol()
     {
         agent.speed = 2.5f;
-        if (!agent.pathPending && agent.remainingDistance < 0.5f && !agent.isOnOffMeshLink)
+        if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
+            if (waypoints == null || waypoints.Length == 0) return;
             wpIndex = (wpIndex + 1) % waypoints.Length;
             agent.SetDestination(waypoints[wpIndex].position);
         }
@@ -143,77 +123,7 @@ public class EnemyAI2 : MonoBehaviour
         Gizmos.DrawRay(transform.position + Vector3.up, leftBoundary  * viewRadius);
         Gizmos.DrawRay(transform.position + Vector3.up, rightBoundary * viewRadius);
     }
-    
 
-    private IEnumerator TraverseOffMeshLinkWithJump()
-    {
-        isJumping = true;
-
-        OffMeshLinkData data = agent.currentOffMeshLinkData;
-        Vector3 start = data.startPos;
-        Vector3 end   = data.endPos;
-
-        FaceHorizontally(end, 18f);
-
-        if (HashJump != 0) anim.SetTrigger(HashJump);
-
-        if (!useParabolaMovement)
-        {
-            agent.updatePosition = false;
-
-            float timer = 0f;
-            while (timer < jumpDuration)
-            {
-                timer += Time.deltaTime;
-                yield return null;
-            }
-
-            agent.updatePosition = true;
-        }
-        else
-        {
-            agent.updatePosition = false;
-
-            float t = 0f;
-            Vector3 origin = start;
-            while (t < 1f)
-            {
-                t += Time.deltaTime / Mathf.Max(0.001f, jumpDuration);
-                Vector3 pos = Parabola(origin, end, jumpHeight, Mathf.Clamp01(t));
-                transform.position = pos;
-
-                Vector3 dir = (end - transform.position); dir.y = 0f;
-                if (dir.sqrMagnitude > 0.0001f)
-                    transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 12f);
-
-                yield return null;
-            }
-
-            agent.updatePosition = true;
-        }
-
-        if (HashLand != 0) anim.SetTrigger(HashLand);
-
-        agent.CompleteOffMeshLink();
-        isJumping = false;
-    }
-
-    private Vector3 Parabola(Vector3 start, Vector3 end, float height, float t)
-    {
-        Vector3 m = Vector3.Lerp(start, end, t);
-        float y = -4f * height * (t - 0.5f) * (t - 0.5f) + height; // pico en t=0.5
-        m.y += y;
-        return m;
-    }
-
-    private void FaceHorizontally(Vector3 target, float turnSpeed)
-    {
-        Vector3 dir = target - transform.position; dir.y = 0f;
-        if (dir.sqrMagnitude < 0.0001f) return;
-        Quaternion look = Quaternion.LookRotation(dir);
-        transform.rotation = Quaternion.Slerp(transform.rotation, look, Time.deltaTime * turnSpeed);
-    }
-    
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

@@ -1447,7 +1447,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 1
-  m_Speed: 2.5
+  m_Speed: 4
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 360
@@ -1575,7 +1575,7 @@ MonoBehaviour:
   - {fileID: 1613220805}
   sfxSource: {fileID: 254675322}
   hitSfx: {fileID: 8300000, guid: 359c93ee2f13f4390985db6829524dd2, type: 3}
-  viewRadius: 10
+  viewRadius: 100
   viewAngle: 90
   objective: {fileID: 1420535853}
   loseSightTime: 3
@@ -4324,7 +4324,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20, y: -10.000412}
+  m_AnchoredPosition: {x: 20, y: -10.000427}
   m_SizeDelta: {x: -40, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &906681178
@@ -8038,7 +8038,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1825567492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8434,7 +8434,7 @@ MonoBehaviour:
   - {fileID: 270647638}
   sfxSource: {fileID: 1918953490}
   hitSfx: {fileID: 8300000, guid: 359c93ee2f13f4390985db6829524dd2, type: 3}
-  viewRadius: 10
+  viewRadius: 400
   viewAngle: 180
   objective: {fileID: 1420535853}
   loseSightTime: 3
@@ -8473,7 +8473,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 1
-  m_Speed: 5
+  m_Speed: 40
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 360
@@ -8773,8 +8773,8 @@ MonoBehaviour:
   - {fileID: 270647638}
   sfxSource: {fileID: 1928916206}
   hitSfx: {fileID: 8300000, guid: 359c93ee2f13f4390985db6829524dd2, type: 3}
-  viewRadius: 10
-  viewAngle: 180
+  viewRadius: 200
+  viewAngle: 270
   objective: {fileID: 1420535853}
   loseSightTime: 3
   attackRange: 2

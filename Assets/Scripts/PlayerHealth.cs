@@ -26,12 +26,10 @@ public class PlayerHealth : MonoBehaviour
         {
             maxLives = PersistenceManager.Instance.data.maxLives;
             currentLives = PersistenceManager.Instance.data.currentLives;
-            Debug.Log($"<color=lime>[PlayerHealth]</color> Datos cargados - Vidas: {currentLives}/{maxLives}");
         }
         else
         {
             currentLives = maxLives;
-            Debug.Log($"<color=yellow>[PlayerHealth]</color> Usando valores por defecto - Vidas: {currentLives}/{maxLives}");
         }
         
         // Notificar UI
@@ -48,15 +46,6 @@ public class PlayerHealth : MonoBehaviour
             Die();
         }
         
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            if (UIManager.Instance != null &&
-                UIManager.Instance.TryConsumeItem("Aid kit", out int healValue))
-            {
-                Debug.Log("Usando Aid kit para curar " + healValue + " vidas.");
-                Heal(healValue);
-            }
-        }
     }
     
     public void Heal(int amount)
@@ -121,7 +110,6 @@ public class PlayerHealth : MonoBehaviour
     
     private void Die()
     {
-        Debug.Log("<color=red>[PlayerHealth]</color> ¡Jugador muerto!");
         gameObject.SetActive(false); 
         SceneManager.LoadScene("LostMenu");
     }

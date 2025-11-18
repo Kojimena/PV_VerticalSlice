@@ -10,21 +10,21 @@ public class UIManager : MonoBehaviour
     public static UIManager Instance;
 
     [Header("UI References")]
-    // [SerializeField] private TMP_Text coinText;
    
     [Header("Lives UI")]
     [SerializeField] private Transform livesPanel;
     [SerializeField] private GameObject heartPrefab;
     
-    // [Header("Door UI")]
-    // [SerializeField] private TMP_Text doorText;
-    // [SerializeField] private GameObject doorObject;
-    
     [Header("Inventory UI")]
+    [SerializeField] private GameObject inventoryPanel; 
     [SerializeField] private Transform inventoryContent; 
-    [SerializeField] private GameObject inventoryItemPrefab; 
+    [SerializeField] private GameObject inventoryItemPrefab;
     
-    // private int coinCount;
+    [Header("Inventory Settings")]
+    [SerializeField] private KeyCode toggleInventoryKey = KeyCode.Tab;
+    [SerializeField] private bool pauseGameWhenOpen = true;
+    
+    private bool inventoryOpen = false;
     
     private readonly Dictionary<PickUpData, int> inventoryStacks = new();
     private readonly Dictionary<PickUpData, GameObject> inventoryRows = new();
@@ -49,10 +49,9 @@ public class UIManager : MonoBehaviour
     
     private void Start()
     {
-        // coinCount = PersistenceManager.Instance.data.coinCount;
-        // if (coinText) coinText.text = $"Coins: {coinCount}";
+        if (inventoryPanel) inventoryPanel.SetActive(false);
+        inventoryOpen = false;
         
-        //load inventory
         foreach (var itemData in PersistenceManager.Instance.data.inventoryItems)
         {
             var data = GetPickUpByName(itemData.itemName);
@@ -78,14 +77,54 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(toggleInventoryKey))
+        {
+            ToggleInventory();
+        }
+    }
+
+    private void ToggleInventory()
+    {
+        inventoryOpen = !inventoryOpen;
+        
+        if (inventoryPanel) 
+            inventoryPanel.SetActive(inventoryOpen);
+        
+        if (pauseGameWhenOpen)
+        {
+            Time.timeScale = inventoryOpen ? 0f : 1f;
+        }
+        
+        if (inventoryOpen)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        
+        Debug.Log($"<color=cyan>[UIManager]</color> Inventario {(inventoryOpen ? "abierto" : "cerrado")}");
+    }
+    
+    public void CloseInventory()
+    {
+        if (inventoryOpen)
+        {
+            ToggleInventory();
+        }
+    }
+
     private void OnEnable()
     {
         if (GameEventsBehaviour.Instance != null)
         {
-            // GameEventsBehaviour.Instance.OnCoinCollected += UpdateCoins;
             GameEventsBehaviour.Instance.OnLivesChanged += UpdateLivesUI;
             GameEventsBehaviour.Instance.OnItemInventoryCollected += AddToInventory;
-            // GameEventsBehaviour.Instance.OnDoorEntered += UpdateDoorUI;
         }
     }
 
@@ -93,76 +132,11 @@ public class UIManager : MonoBehaviour
     {
         if (GameEventsBehaviour.Instance != null)
         {
-            // GameEventsBehaviour.Instance.OnCoinCollected -= UpdateCoins;
             GameEventsBehaviour.Instance.OnLivesChanged -= UpdateLivesUI;
             GameEventsBehaviour.Instance.OnItemInventoryCollected -= AddToInventory;
-            // GameEventsBehaviour.Instance.OnDoorEntered -= UpdateDoorUI;
         }
     }
     
-    // private void UpdateDoorUI()
-    // {
-    //     if (HasItemByName("Key"))
-    //     {
-    //         if (doorObject) doorObject.SetActive(false);
-    //         if (doorText) doorText.text = string.Empty;
-    //         
-    //         if (PersistenceManager.Instance != null)
-    //         {
-    //             PersistenceManager.Instance.SaveSessionData(PersistenceManager.Instance.data);
-    //         }
-    //     }
-    //     else
-    //     {
-    //         if (doorText != null)
-    //         {
-    //             doorText.gameObject.SetActive(true);
-    //             doorText.text = "Necesitas una llave para abrir la puerta";
-    //             StopAllCoroutines(); 
-    //             StartCoroutine(HideDoorTextAfter(2.5f)); 
-    //         }
-    //     }
-    // }
-    //
-    // private System.Collections.IEnumerator HideDoorTextAfter(float seconds)
-    // {
-    //     yield return new WaitForSeconds(seconds);
-    //     if (doorText) doorText.text = string.Empty;
-    // }
-    //
-    // public bool HasItemByName(string itemName)
-    // {
-    //     foreach (var kvp in inventoryStacks)
-    //     {
-    //         if (kvp.Key.displayName == itemName && kvp.Value > 0)
-    //         {
-    //             return true;
-    //         }
-    //     }
-    //
-    //     foreach (var row in inventoryRows.Keys)
-    //     {
-    //         if (row.displayName == itemName)
-    //         {
-    //             return true;
-    //         }
-    //     }
-    //
-    //     return false;
-    // }
-    
-    // private void UpdateCoins()
-    // {
-    //     int value = HasItemByName("Magnet") ? 2 : 1;
-    //     coinCount += value;
-    //
-    //     if (coinText) coinText.text = $"Coins: {coinCount}";
-    //     
-    //     if (PersistenceManager.Instance != null)
-    //     {
-    //         PersistenceManager.Instance.data.coinCount = coinCount;
-    //     }
-    // }
     
     private void UpdateLivesUI(int currentLives, int maxLives)
     {

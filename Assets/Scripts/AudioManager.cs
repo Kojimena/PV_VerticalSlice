@@ -1,16 +1,18 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
-    // SINGLETON
     public static AudioManager instance;
     
     [Header("Audio Sources")]
-    [SerializeField] private AudioSource musicSource;    // Para música de fondo
-    [SerializeField] private AudioSource sfxSource;      // Para efectos de sonido
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioSource sfxSource;
     
-    [Header("Music")]
-    [SerializeField] private AudioClip backgroundMusic;
+    [Header("Music Clips")]
+    [SerializeField] private AudioClip menuMusic;
+    [SerializeField] private AudioClip gameMusic;
+    [SerializeField] private AudioClip drivingMusic; 
     
     [Header("Volume Controls")]
     [SerializeField] [Range(0f, 1f)] private float musicVolume = 0.5f;
@@ -18,16 +20,37 @@ public class AudioManager : MonoBehaviour
     
     private void Awake()
     {
-        // Singleton 
         if (instance == null)
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
             SetupAudioSources();
+            
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+    
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+    
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        switch (scene.name)
+        {
+            case "MainMenu":
+                if (menuMusic != null)
+                    PlayMusic(menuMusic);
+                break;
+            case "Level1":
+                if (gameMusic != null)
+                    PlayMusic(gameMusic);
+                break;
         }
     }
     
@@ -51,14 +74,6 @@ public class AudioManager : MonoBehaviour
         sfxSource.volume = sfxVolume;
     }
     
-    private void Start()
-    {
-        if (backgroundMusic != null)
-        {
-            PlayMusic(backgroundMusic);
-        }
-    }
-    
     public void PlaySFX(AudioClip clip)
     {
         if (clip != null && sfxSource != null)
@@ -66,12 +81,12 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(clip);
         }
     }
-    
-    public void PlaySoundFromLocation(AudioClip clip, Vector3 position)
+
+    public void StopSFX(AudioClip clip)
     {
-        if (clip != null)
+        if (clip != null && sfxSource != null)
         {
-            AudioSource.PlayClipAtPoint(clip, position, sfxVolume);
+            sfxSource.Stop();
         }
     }
     
@@ -79,9 +94,28 @@ public class AudioManager : MonoBehaviour
     {
         if (musicClip != null && musicSource != null)
         {
-            musicSource.Stop();
-            musicSource.clip = musicClip;
-            musicSource.Play();
+            if (musicSource.clip != musicClip)
+            {
+                musicSource.Stop();
+                musicSource.clip = musicClip;
+                musicSource.Play();
+            }
+        }
+    }
+    
+    public void PlayDrivingMusic()
+    {
+        if (drivingMusic != null)
+        {
+            PlayMusic(drivingMusic);
+        }
+    }
+    
+    public void PlayLevelMusic()
+    {
+        if (gameMusic != null)
+        {
+            PlayMusic(gameMusic);
         }
     }
     

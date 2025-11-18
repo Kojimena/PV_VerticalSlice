@@ -1643,7 +1643,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSource: {fileID: 0}
   sfxSource: {fileID: 0}
-  backgroundMusic: {fileID: 8300000, guid: 2514949eb5d454980b2a26bd5560095f, type: 3}
+  menuMusic: {fileID: 8300000, guid: a3cb8d3e542ce4f6aa67dd4c91ddc6dc, type: 3}
+  gameMusic: {fileID: 8300000, guid: 8d309c30c8d634cfca7ac3c1b9bf0168, type: 3}
+  drivingMusic: {fileID: 8300000, guid: 1339d8009ac634354a8d4802b01be56d, type: 3}
   musicVolume: 0.5
   sfxVolume: 1
 --- !u!4 &1801101686

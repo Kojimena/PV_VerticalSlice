@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using TMPro;   
 
 public class EnemyAI1 : MonoBehaviour
 {
@@ -9,6 +10,11 @@ public class EnemyAI1 : MonoBehaviour
     [Header("Audio")]
     [SerializeField] private AudioSource enemyAudioSource;
     [SerializeField] private AudioClip talkSfx;
+    
+    [Header("UI")]
+    [SerializeField] private TMP_Text talkText;  
+    [SerializeField] private string message = "Hello there!";
+
 
     private int wpIndex = 0;
     private State currentState = State.Patrol;
@@ -58,6 +64,12 @@ public class EnemyAI1 : MonoBehaviour
         transform.LookAt(objective);
         agent.SetDestination(transform.position);
 
+        if (talkText != null)
+        {
+            talkText.gameObject.SetActive(true);
+            talkText.text = message;
+        }
+
         if (Time.time > lastTalkTime + talkCooldown)
         {
             anim.SetBool("isTalking", true);
@@ -74,13 +86,16 @@ public class EnemyAI1 : MonoBehaviour
         {
             currentState = State.Chase;
             anim.SetBool("isTalking", false);
+            HideTalkText();
         }
         else if (!LookForObjective())
         {
             currentState = State.Patrol;
             anim.SetBool("isTalking", false);
+            HideTalkText();
         }
     }
+
 
     private void Chase()
     {
@@ -95,6 +110,9 @@ public class EnemyAI1 : MonoBehaviour
         {
             currentState = State.Talk;
             anim.SetTrigger("isTalking");
+
+            if (talkText != null)
+                talkText.text = message;
         }
         else if (d > viewRadius)
         {
@@ -135,6 +153,16 @@ public class EnemyAI1 : MonoBehaviour
             return hit.transform == objective;
         return false;
     }
+    
+    private void HideTalkText()
+    {
+        if (talkText != null)
+        {
+            talkText.gameObject.SetActive(false);
+            talkText.text = "";
+        }
+    }
+
 
     private void OnDrawGizmos()
     {

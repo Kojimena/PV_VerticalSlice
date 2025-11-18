@@ -5,6 +5,7 @@ public class RoverController : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private Transform driverSeat; 
     [SerializeField] private Camera roverCamera; 
+    [SerializeField] private AudioClip SFXEngine;
     
     [Header("Movimiento del Rover")]
     [SerializeField] private float moveSpeed = 8f;
@@ -82,6 +83,9 @@ public class RoverController : MonoBehaviour
 
     void EnterRover()
     {
+        AudioManager.instance.PlayDrivingMusic();
+        AudioManager.instance.PlaySFX(SFXEngine);
+
         if (player == null) return;
 
         isPlayerInside = true;
@@ -116,6 +120,9 @@ public class RoverController : MonoBehaviour
 
     void ExitRover()
     {
+        AudioManager.instance.PlayLevelMusic();
+        AudioManager.instance.StopSFX(SFXEngine);
+
         if (player == null) return;
 
         isPlayerInside = false;

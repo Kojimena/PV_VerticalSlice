@@ -22,9 +22,8 @@ public class UIManager : MonoBehaviour
     
     [Header("Inventory Settings")]
     [SerializeField] private KeyCode toggleInventoryKey = KeyCode.Tab;
-    [SerializeField] private bool pauseGameWhenOpen = true;
     
-    private bool inventoryOpen = false;
+    private bool inventoryOpen = true;
     
     private readonly Dictionary<PickUpData, int> inventoryStacks = new();
     private readonly Dictionary<PickUpData, GameObject> inventoryRows = new();
@@ -49,8 +48,11 @@ public class UIManager : MonoBehaviour
     
     private void Start()
     {
-        if (inventoryPanel) inventoryPanel.SetActive(false);
-        inventoryOpen = false;
+        if (inventoryPanel) inventoryPanel.SetActive(true);
+        inventoryOpen = true;
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         
         foreach (var itemData in PersistenceManager.Instance.data.inventoryItems)
         {
@@ -91,23 +93,6 @@ public class UIManager : MonoBehaviour
         
         if (inventoryPanel) 
             inventoryPanel.SetActive(inventoryOpen);
-        
-        if (pauseGameWhenOpen)
-        {
-            Time.timeScale = inventoryOpen ? 0f : 1f;
-        }
-        
-        if (inventoryOpen)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        
         Debug.Log($"<color=cyan>[UIManager]</color> Inventario {(inventoryOpen ? "abierto" : "cerrado")}");
     }
     

@@ -1575,6 +1575,8 @@ MonoBehaviour:
   - {fileID: 1613220805}
   sfxSource: {fileID: 254675322}
   hitSfx: {fileID: 8300000, guid: 359c93ee2f13f4390985db6829524dd2, type: 3}
+  patrolSpeed: 6
+  chaseSpeed: 10
   viewRadius: 100
   viewAngle: 90
   objective: {fileID: 1420535853}
@@ -4431,7 +4433,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20, y: -10.000366}
+  m_AnchoredPosition: {x: 20, y: -10.000397}
   m_SizeDelta: {x: -40, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &906681178
@@ -5621,6 +5623,8 @@ MonoBehaviour:
   - {fileID: 270647638}
   sfxSource: {fileID: 1111574218}
   hitSfx: {fileID: 8300000, guid: 359c93ee2f13f4390985db6829524dd2, type: 3}
+  patrolSpeed: 4
+  chaseSpeed: 12
   viewRadius: 200
   viewAngle: 270
   objective: {fileID: 1420535853}
@@ -8914,6 +8918,8 @@ MonoBehaviour:
   - {fileID: 270647638}
   sfxSource: {fileID: 1918953490}
   hitSfx: {fileID: 8300000, guid: 359c93ee2f13f4390985db6829524dd2, type: 3}
+  patrolSpeed: 2
+  chaseSpeed: 8
   viewRadius: 400
   viewAngle: 180
   objective: {fileID: 1420535853}
@@ -9253,6 +9259,8 @@ MonoBehaviour:
   - {fileID: 270647638}
   sfxSource: {fileID: 1928916206}
   hitSfx: {fileID: 8300000, guid: 359c93ee2f13f4390985db6829524dd2, type: 3}
+  patrolSpeed: 3
+  chaseSpeed: 8
   viewRadius: 200
   viewAngle: 270
   objective: {fileID: 1420535853}

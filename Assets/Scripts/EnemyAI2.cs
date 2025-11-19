@@ -9,6 +9,9 @@ public class EnemyAI2 : MonoBehaviour
 
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioClip hitSfx;
+    
+    [SerializeField] private float patrolSpeed = 4.0f;
+    [SerializeField] private float chaseSpeed = 5.0f;
 
     private int wpIndex = 0;
     private State currentState = State.Patrol;
@@ -71,8 +74,7 @@ public class EnemyAI2 : MonoBehaviour
     private void Chase()
     {
         if (!objective) { currentState = State.Patrol; return; }
-
-        agent.speed = 5.0f;
+        agent.speed = chaseSpeed;
         agent.SetDestination(objective.position);
 
         float d = Vector3.Distance(transform.position, objective.position);
@@ -91,7 +93,7 @@ public class EnemyAI2 : MonoBehaviour
 
     private void Patrol()
     {
-        agent.speed = 2.5f;
+        agent.speed = patrolSpeed;
         if (!agent.pathPending && agent.remainingDistance < 0.5f)
         {
             if (waypoints == null || waypoints.Length == 0) return;

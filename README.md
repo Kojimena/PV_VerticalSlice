@@ -1,5 +1,7 @@
 # SpaceJunk — Vertical Slice
 
+[Video Juego Completo](https://youtu.be/Zlh8_OhRE8M?si=KB2uNOtILn9vbDEm)
+
 Prototipo jugable que demuestra el game loop principal: sobrevivir en el planeta, reunir piezas de la nave y escapar.
 
 ## Conceptos implementados

@@ -19,7 +19,9 @@ public class GameManager : MonoBehaviour
     }
 
     public int currentLevel = 1;
-    public int totalLevels = 3;
+    public int totalLevels = 1;
+    
+    private static readonly string[] gameplayScenes = { "Level1", "Level2", "Level3" };
 
 
     void Awake()
@@ -47,16 +49,10 @@ public class GameManager : MonoBehaviour
         
         Time.timeScale = 1f;
         
-        if (scene.buildIndex >= 2 && scene.buildIndex <= 5) 
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+        bool isGameplayScene = System.Array.Exists(gameplayScenes, level => level == scene.name);
+
+        Cursor.lockState = isGameplayScene ? CursorLockMode.Locked : CursorLockMode.None;
+        Cursor.visible = !isGameplayScene;
     }
 
     public void LoadLevel(int levelIndex)
